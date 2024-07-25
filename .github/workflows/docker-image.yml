@@ -1,0 +1,30 @@
+name: Build and push image into Docker Hub
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  IMAGE_NAME: pgadmin_render
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    
+    - name: Build and Push the Docker image
+      uses: docker/build-push-action@v5
+      with:
+        push: true
+        tags: ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:v${{ github.run_number }}
+
